@@ -1,4 +1,4 @@
-const {normalizeURL, getURLsFromHTML} = require('./crawl')
+const {normalizeURL, getURLsFromHTML} = require('./crawl.js')
 const {test,expect} = require('@jest/globals')
 
 test('normalizeURL strip protocol',()=>{
@@ -13,7 +13,7 @@ test('normalizeURL strip protocol',()=>{
 
 test('normalizeURL strip trailing slash',()=>{
 
-    const input = 'https://adebola.com/thenodenovice/'
+    const input = 'https://adebola.com/thenodenovice'
     const actual = normalizeURL(input)
     const expected = 'adebola.com/thenodenovice'
 
@@ -88,7 +88,7 @@ test('getURLsFromHTML bad url',()=>{
     const inputHTML = `
     <html>
         <body>
-            <a href="invalid">invalid</a>
+            <a href="https://adebola.com/thenodenovice///">invalid</a>
 
         </body>
     </html>

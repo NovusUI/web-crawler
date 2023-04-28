@@ -3,23 +3,49 @@ const {JSDOM} = require('jsdom')
 const  axios = require('axios')
 
 
-const crawlWebsite = async (url) => {
+const crawlWebsite = async (baseURL, currentURL, pages) => {
+
+
+    const baseURLOBJ = new URL(baseURL)
+    const currentURLOBJ = new URL(currentURL)
+
+    if(baseURLOBJ.hostname !== currentURLOBJ.hostname){
+        return pages
+    }
+    
+    const normalizedUrl = normalizeURL(currentURL)
+    
+    if(pages[normalizedUrl] > 0){
+        pages[normalizedUrl]++;
+        return pages
+    }
+
+    pages[normalizedUrl] = 1
+    
+    console.log(`actively crawling ${normalizedUrl}`)
 
     try{
         const response = await axios({
             method: 'get',
-            url: url
+            url: currentURL
         })
         console.log(response.headers)
-        if(!response.headers.includes('text/html')){
+        if(!response.headers['content-type'].includes('text/html')){
             console.log(`Error, header ${response.headers} does not include text/html`)
+            return pages
         }
 
-        // console.log( await response.data)
+        const pageURLS =  getURLsFromHTML(response.data, currentURL)
+
+        for(const pageURL of pageURLS){
+            pages = await crawlWebsite(baseURL, pageURL, pages)
+        }
+
 
     }catch(e){
         console.log(e.message)
     }
+    return pages
     
 }
 

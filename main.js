@@ -1,6 +1,6 @@
 const {crawlWebsite} = require('./crawl')
 
-function main() {
+async function main() {
 
     if(process.argv.length < 3){
         console.log('no argument provided')
@@ -15,7 +15,13 @@ function main() {
     const path = process.argv[2]
     console.log(`crawling website ${process.argv[2]}`)
 
-    crawlWebsite(path)
+    const pages = await crawlWebsite(path, path, {})
+
+ 
+    
+    for(let page of Object.entries(pages)){
+        console.log(page)
+    }
 
     
 }
