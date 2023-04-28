@@ -1,5 +1,27 @@
 const { urlencoded } = require('body-parser')
 const {JSDOM} = require('jsdom')
+const  axios = require('axios')
+
+
+const crawlWebsite = async (url) => {
+
+    try{
+        const response = await axios({
+            method: 'get',
+            url: url
+        })
+        console.log(response.headers)
+        if(!response.headers.includes('text/html')){
+            console.log(`Error, header ${response.headers} does not include text/html`)
+        }
+
+        // console.log( await response.data)
+
+    }catch(e){
+        console.log(e.message)
+    }
+    
+}
 
 const getURLsFromHTML = (htmlBody, baseURL)=> {
     const urls = []
@@ -54,5 +76,6 @@ const normalizeURL = (urlString) => {
 
 module.exports = {
     normalizeURL,
-    getURLsFromHTML
+    getURLsFromHTML,
+    crawlWebsite
 }
